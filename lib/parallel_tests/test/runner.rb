@@ -87,12 +87,15 @@ module ParallelTests
           pid = nil
           output = IO.popen(env, cmd) do |io|
             pid = io.pid
+            puts "=== pid #{pid} for command: #{cmd}"
             ParallelTests.pids.add(pid)
             capture_output(io, env, options)
           end
           ParallelTests.pids.delete(pid) if pid
           exitstatus = $?.exitstatus
           seed = output[/seed (\d+)/,1]
+
+          puts "=== #{$?.inspect} for command: #{cmd}"
 
           if report_process_command?(options) && options[:serialize_stdout]
             output = [cmd, output].join("\n")
